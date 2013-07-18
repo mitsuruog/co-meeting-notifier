@@ -1,4 +1,4 @@
-var ComeetingNotifer = function () {
+var ComeetingNotifier = function () {
 	'use strict';
 
 	var authURL = {

@@ -9,7 +9,7 @@
 		'</a>' +
 		'</li>';
 
-	var comeetingNotifer = new ComeetingNotifer();
+	var comeetingNotifier = new ComeetingNotifier();
 	var tmpl = _.template(templateString);
 	var $groupList = $('.groupList');
 
@@ -18,7 +18,7 @@
 
 	function render() {
 
-		var groupList = comeetingNotifer.getGroupList();
+		var groupList = comeetingNotifier.getGroupList();
 		var html = '';
 
 		_.each(groupList, function (group) {

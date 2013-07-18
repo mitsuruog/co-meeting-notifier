@@ -1,13 +1,13 @@
 !(function () {
 	'use strict';
 
-	var comeetingNotifer = new ComeetingNotifer();
+	var comeetingNotifier = new ComeetingNotifier();
 
 	if (location.href.match(/code=(\S*)/)) {
 
 		var code = location.href.match(/code=(\S*)/)[1];
 
-		comeetingNotifer.claimAccessToken(code);
+		comeetingNotifier.claimAccessToken(code);
 
 //開いているタブを閉じる
 //	chrome.tabs.getSelected(null, function(tab) {

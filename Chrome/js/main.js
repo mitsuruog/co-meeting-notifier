@@ -2,7 +2,7 @@
 	'use strict';
 
 	var UPDATE_INTERVAL = 1000 * 60;
-	var comeetingNotifer = new ComeetingNotifer();
+	var comeetingNotifer = new ComeetingNotifier();
 
 	chrome.browserAction.onClicked.addListener(function () {
 
