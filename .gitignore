@@ -1,0 +1,7 @@
+.idea
+mode_modules
+
+*.crx
+*.pem
+
+const.js
