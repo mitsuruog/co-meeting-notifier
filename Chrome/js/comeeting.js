@@ -16,7 +16,7 @@ var ComeetingNotifier = function () {
 		var authorizeUrl = authURL.authorize;
 		authorizeUrl += '?response_type=code';
 		authorizeUrl += '&client_id=' + OAUTH_CONSUMER_KEY;
-		authorizeUrl += '&redirect_uri=' + URLs.redirect;
+		authorizeUrl += '&redirect_uri=' + authURL.redirect;
 
 		window.open(authorizeUrl);
 

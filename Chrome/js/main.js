@@ -7,7 +7,7 @@
 	chrome.browserAction.onClicked.addListener(function () {
 
 		if (!comeetingNotifer.isAuthenticated()) {
-			window.claimAuthorization();
+			comeetingNotifer.claimAuthorization();
 			return;
 		}
 
