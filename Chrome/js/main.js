@@ -1,9 +1,20 @@
-!(function () {
+/**
+ * @fileoverview Main module include interval for fetch unread counts.
+ * @copyright mitsuruog 2013
+ * @author mitsuruog <mitsuru.ogawa.jp@gmail.com>
+ * @license MIT
+ *
+ * @module js/main.js
+ */
+(function () {
 	'use strict';
 
 	var UPDATE_INTERVAL = 1000 * 60;
 	var comeetingNotifer = new ComeetingNotifier();
 
+	/**
+	 *
+	 */
 	chrome.browserAction.onClicked.addListener(function () {
 
 		if (!comeetingNotifer.isAuthenticated()) {
@@ -17,6 +28,12 @@
 
 	});
 
+	/**
+	 *
+	 * @param badge
+	 * @param color
+	 * @param title
+	 */
 	function render(badge, color, title) {
 
 		chrome.browserAction.setBadgeText({
@@ -31,6 +48,9 @@
 
 	}
 
+	/**
+	 *
+	 */
 	function update() {
 
 		comeetingNotifer.comeetingNotifCount(function (count) {

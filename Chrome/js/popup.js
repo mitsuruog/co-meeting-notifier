@@ -1,4 +1,12 @@
-!(function () {
+/**
+ * @fileoverview Make the group list when call from browser action triggered.
+ * @copyright mitsuruog 2013
+ * @author mitsuruog <mitsuru.ogawa.jp@gmail.com>
+ * @license MIT
+ *
+ * @module js/popup.js
+ */
+(function () {
 	'use strict';
 
 	var templateString = '' +
@@ -16,6 +24,9 @@
 	//popup.htmlにリストを表示
 	render();
 
+	/**
+	 *
+	 */
 	function render() {
 
 		var groupList = comeetingNotifier.getGroupList();
