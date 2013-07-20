@@ -10,3 +10,5 @@ Displays your co-meeting unread counts
 
 [MIT License](http://ja.wikipedia.org/wiki/MIT_License)
 (c) [mitsuruog](https://github.com/mitsuruog)
+
+inspired by [GitHub-Notifier](https://github.com/sindresorhus/GitHub-Notifier) @ [sindresorhus](http://sindresorhus.com)
