@@ -1,7 +1,7 @@
 co-meeting-notifier
 ===================
 
-Displays your co-meeting unread counts
+Displays your [co-meeting](http://www.co-meeting.com/) unread counts
 
 ![screenshot](https://github.com/mitsuruog/co-meeting-notifier/raw/master/screenshot.png)
 
