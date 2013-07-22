@@ -4,7 +4,11 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 
 		jshint: {
-			all: ['Gruntfile.js', 'Chrome/js/**/*.js']
+			all: [
+				'Gruntfile.js',
+				'Chrome/js/**/*.js',
+				'!Chrome/js/analytics.js'
+			]
 		},
 		watch: {
 			scripts: {

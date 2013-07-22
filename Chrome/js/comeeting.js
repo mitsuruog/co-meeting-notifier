@@ -9,67 +9,44 @@
  *
  * @module js/comeeting.js
  */
-var ComeetingNotifier = function () {
-	'use strict';
-
-	var authURL = {
-		redirect: 'chrome-extension://' + APPLICATION_ID + '/callback.html',
-		authorize: 'https://www.co-meeting.com/oauth/authorize',
-		token: 'https://www.co-meeting.com/oauth/token'
-	};
-
-	var NOTIFICATIONS_URL = 'https://www.co-meeting.com/api/v1/groups/my';
-
-	$.ajaxSetup({
-		beforeSend: function (xhr) {
-			if (module.isAuthenticated()) {
-				xhr.setRequestHeader('Authorization', 'Bearer ' + module.getToken());
-			}
-		},
-		cache: false
-	});
+var ComeetingNotifier = function() {
 
 	var module = {};
+	var URL = {
+		REDIRECT: 'chrome-extension://' + APPLICATION_ID + '/callback.html',
+		AUTHORIZE: 'https://www.co-meeting.com/oauth/authorize',
+		TOKEN: 'https://www.co-meeting.com/oauth/token',
+		FETCH: 'https://www.co-meeting.com/api/v1/groups/my'
+	};
 
-	/**
-	 *
-	 */
-	module.claimAuthorization = function () {
+	function initialize() {
 
-		module._resetAuthorization();
+		$.ajaxSetup({
+			beforeSend: function (xhr) {
+				if (module.isAuthenticated()) {
+					xhr.setRequestHeader('Authorization', 'Bearer ' + module.accessToken.get());
+				}
+			},
+			cache: false
+		});
 
-		var authorizeUrl = authURL.authorize;
+	}
+
+	module.getAuthorizationUrl = function () {
+
+		var authorizeUrl = URL.AUTHORIZE;
 		authorizeUrl += '?response_type=code';
 		authorizeUrl += '&client_id=' + OAUTH_CONSUMER_KEY;
-		authorizeUrl += '&redirect_uri=' + authURL.redirect;
+		authorizeUrl += '&redirect_uri=' + URL.REDIRECT;
 
-		window.open(authorizeUrl);
-
-	};
-
-	/**
-	 *
-	 * @private
-	 */
-	module._resetAuthorization = function () {
-
-		localStorage.setItem("oauth_token", '');
-		localStorage.setItem("refresh_token", '');
-		localStorage.setItem("expires_in", '');
-		localStorage.setItem("groupList", '');
-
-		chrome.browserAction.setPopup({popup: ''});
+		return authorizeUrl;
 
 	};
 
-	/**
-	 *
-	 * @param code
-	 */
 	module.claimAccessToken = function (code) {
 
 		var settings = {
-			url: authURL.token,
+			url: URL.TOKEN,
 			type: 'POST'
 		};
 
@@ -78,7 +55,7 @@ var ComeetingNotifier = function () {
 			code: code,
 			client_id: OAUTH_CONSUMER_KEY,
 			client_secret: OAUTH_CONSUMER_SECRET,
-			redirect_uri: authURL.redirect
+			redirect_uri: URL.REDIRECT
 		};
 
 		$.ajax(settings)
@@ -88,33 +65,29 @@ var ComeetingNotifier = function () {
 					console.debug('accessToken is empty');
 					return;
 				}
-				module._setOauthToken(accessToken);
+				module.oauthToken.set(accessToken);
 
 			}).fail(function (jqXHR, state, statusText) {
 
 				console.log(state + ':' + jqXHR.status + ' ' + statusText);
-				module._resetAuthorization();
+				module.clearAuthorization();
 
 			});
-
 	};
 
-	/**
-	 *
-	 */
 	module.claimRefreshToken = function () {
 
-		var token = this.retRefreshToken();
-		if (!token) return;
+		var refreshToken = module.refreshToken.get();
+		if (!refreshToken) return;
 
 		var settings = {
-			url: authURL.token,
+			url: this.const.TOKEN_URL,
 			type: 'POST'
 		};
 
 		settings.data = {
 			grant_type: 'refresh_token',
-			refresh_token: token,
+			refresh_token: refreshToken,
 			client_id: OAUTH_CONSUMER_KEY,
 			client_secret: OAUTH_CONSUMER_SECRET
 		};
@@ -126,102 +99,17 @@ var ComeetingNotifier = function () {
 					console.debug('accessToken is empty');
 					return;
 				}
-				module._setOauthToken(accessToken);
+				module.oauthToken.set(accessToken);
 
 			}).fail(function (jqXHR, state, statusText) {
 
 				console.log(state + ':' + jqXHR.status + ' ' + statusText);
-				module._resetAuthorization();
+				module.clearAuthorization();
 
 			});
-
 	};
 
-	/**
-	 * return group list
-	 * @returns {*}
-	 */
-	module.getGroupList = function () {
-		var groupList = localStorage.getItem("groupList");
-		if (!groupList) {
-			console.debug('groupList is empty');
-		}
-		if (!_.isArray(groupList)) {
-			console.debug('groupList is not Array');
-		}
-		return groupList ? JSON.parse(groupList) : void 0;
-	};
-
-	/**
-	 * set group list
-	 * @param groupList
-	 */
-	module.setGroupList = function (groupList) {
-		if (!groupList) {
-			console.debug('groupList is empty');
-		}
-		localStorage.setItem("groupList", JSON.stringify(groupList));
-	};
-
-	/**
-	 *
-	 * @returns {*}
-	 * @private
-	 */
-	module._getOauthToken = function () {
-		var oauthToken = localStorage.getItem("oauth_token");
-		if (!oauthToken) {
-			console.debug('oauthToken is empty');
-		}
-		return oauthToken ? JSON.parse(oauthToken) : void 0;
-	};
-
-	/**
-	 *
-	 * @param oauthToken
-	 * @private
-	 */
-	module._setOauthToken = function (oauthToken) {
-		localStorage.setItem("oauth_token", JSON.stringify(oauthToken));
-	};
-
-	/**
-	 *
-	 * @returns {*}
-	 */
-	module.getToken = function () {
-		var oauthToken = module._getOauthToken();
-		if (!oauthToken || !oauthToken.access_token) {
-			console.debug('access_token is not String');
-		}
-		return oauthToken.access_token;
-	};
-
-	/**
-	 *
-	 * @returns {*}
-	 */
-	module.getRefreshToken = function () {
-		var oauthToken = module._getOauthToken();
-		if (!oauthToken || !oauthToken.refresh_token) {
-			console.debug('refresh_token is not String');
-		}
-		return oauthToken.refresh_token;
-	};
-
-	/**
-	 *
-	 * @returns {boolean}
-	 */
-	module.isAuthenticated = function () {
-		return !!module._getOauthToken();
-	};
-
-	/**
-	 *
-	 * @param callback
-	 */
-	module.comeetingNotifCount = function (callback) {
+	module.fetchUnreadCount = function (callback) {
 
 		if (!module.isAuthenticated()) {
 			callback();
@@ -229,7 +117,7 @@ var ComeetingNotifier = function () {
 		}
 
 		var settings = {
-			url: NOTIFICATIONS_URL,
+			url: URL.FETCH,
 			type: 'GET'
 		};
 
@@ -245,7 +133,7 @@ var ComeetingNotifier = function () {
 				var groupList = data.result.groups;
 				var unreadCount = 0;
 
-				localStorage.setItem("groupList", JSON.stringify(groupList));
+				module.groupList.set(groupList);
 
 				_.each(groupList, function (group) {
 					unreadCount += group.unread_counts;
@@ -262,7 +150,7 @@ var ComeetingNotifier = function () {
 				}
 
 				console.log(state + ':' + jqXHR.status + ' ' + statusText);
-				module._resetAuthorization();
+				module.clearAuthorization();
 
 				callback();
 
@@ -270,6 +158,81 @@ var ComeetingNotifier = function () {
 
 	};
 
+	module.isAuthenticated = function () {
+		return !!module.oauthToken.get();
+	};
+
+	module.clearAuthorization = function(){
+		module.groupList.clear();
+		module.oauthToken.clear();
+	};
+
+	module.groupList = {
+		KEY_NAME: 'groupList',
+		get: function () {
+			var groupList = localStorage.getItem(this.KEY_NAME);
+			if (!groupList) {
+				console.debug('groupList is empty');
+			}
+			if (!_.isArray(groupList)) {
+				console.debug('groupList is not Array');
+			}
+			return groupList ? JSON.parse(groupList) : void 0;
+		},
+		set: function (groupList) {
+			if (!groupList) {
+				console.debug('groupList is empty');
+			}
+			localStorage.setItem(this.KEY_NAME, JSON.stringify(groupList));
+		},
+		clear: function(){
+			localStorage.setItem(this.KEY_NAME, '');
+		}
+	};
+
+	module.oauthToken = {
+		KEY_NAME: 'oauthToken',
+		get: function () {
+			var oauthToken = localStorage.getItem(this.KEY_NAME);
+			if (!oauthToken) {
+				console.debug('oauthToken is empty');
+			}
+			return oauthToken ? JSON.parse(oauthToken) : void 0;
+		},
+		set: function (oauthToken) {
+			if (!oauthToken) {
+				console.debug('oauthToken is empty');
+			}
+			localStorage.setItem(this.KEY_NAME, JSON.stringify(oauthToken));
+		},
+		clear: function(){
+			localStorage.setItem(this.KEY_NAME, '');
+		}
+	};
+
+	module.accessToken = {
+		get: function () {
+			var oauthToken = module.oauthToken.get();
+			if (!oauthToken || !oauthToken.access_token) {
+				console.debug('access_token is not String');
+			}
+			return oauthToken.access_token;
+		}
+	};
+
+	module.refreshToken = {
+		get: function () {
+			var oauthToken =  module.oauthToken.get();
+			if (!oauthToken || !oauthToken.refresh_token) {
+				console.debug('refresh_token is not String');
+			}
+			return oauthToken.refresh_token;
+		}
+	};
+
+	initialize();
+
 	return module;
 
 };
+var comeetingNotifier = new ComeetingNotifier();

@@ -7,17 +7,10 @@
 		"default_icon": "icon-19.png"
 	},
 	"background": {
-		"scripts": [
-			"assets/js/jquery-2.0.3.min.js",
-			"assets/js/underscore-min.js",
-			"js/const.js",
-			"js/comeeting.js",
-			"js/main.js"
-		],
-		"persistent": false
+		"page": "background.html"
 	},
 	"permissions": ["https://www.co-meeting.com/api/v1/*"],
-	"content_security_policy": "script-src 'self' 'unsafe-eval';object-src 'self'"
+	"content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com/; object-src 'self'"
 }
 
 

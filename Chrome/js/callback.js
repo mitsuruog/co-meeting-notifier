@@ -9,14 +9,48 @@
 (function () {
 	'use strict';
 
-	var comeetingNotifier = new ComeetingNotifier();
+	var Callback = function(){
 
-	if (location.href.match(/code=(\S*)/)) {
+		var module = {};
+		var bg = chrome.extension.getBackgroundPage().bg;
+		var comeetingNotifier = chrome.extension.getBackgroundPage().comeetingNotifier;
 
-		var code = location.href.match(/code=(\S*)/)[1];
+		function initialize () {
 
-		comeetingNotifier.claimAccessToken(code);
+			window.addEventListener("load", function (e) {
+				module.start();
+			});
 
-	}
+		}
+
+		module.start = function () {
+
+			module.assignMessages();
+			module.assignEventHandlers();
+
+		};
+
+		module.assignMessages = function () {
+
+			if(!location.href.match(/code=(\S*)/)) {
+				throw new Error('Authorization Code is empty');
+			}
+
+			var code =  location.href.match(/code=(\S*)/)[1];
+			//TODO need wapper
+			comeetingNotifier.claimAccessToken(code);
+
+		};
+
+		module.assignEventHandlers = function () {
+
+		};
+
+		initialize();
+
+		return module;
+
+	};
+	new Callback();
 
 })();
