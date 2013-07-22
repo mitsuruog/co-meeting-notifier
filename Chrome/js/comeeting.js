@@ -13,7 +13,7 @@ var ComeetingNotifier = function () {
 	'use strict';
 
 	var authURL = {
-		redirect: 'chrome-extension://cbimlnfniojlclokgpkfmljddpjjjjcl/callback.html',
+		redirect: 'chrome-extension://' + APPLICATION_ID + '/callback.html',
 		authorize: 'https://www.co-meeting.com/oauth/authorize',
 		token: 'https://www.co-meeting.com/oauth/token'
 	};
