@@ -1,10 +1,24 @@
 co-meeting-notifier
 ===================
 
-Displays your [co-meeting](http://www.co-meeting.com/) unread counts
+Chrome Extentions that displays your [co-meeting](http://www.co-meeting.com/) unread counts.
+
+[co-meeting](http://www.co-meeting.com/)の未読数をカウントするChrome Extentionsです。
 
 ![screenshot](https://github.com/mitsuruog/co-meeting-notifier/raw/master/screenshot.png)
 
+## Feature
+
+* Show number of your unread.
+* Show groups you are joining.
+* Move to co-meeting page quickly.
+* 未読数を表示。
+* 参加しているグループを表示。
+* co-mettingページへすばやく移動。
+
+## Release History
+
+* 2013-07-24   v0.1.0   prerelease
 
 ## License
 
