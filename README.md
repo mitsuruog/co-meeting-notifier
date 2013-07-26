@@ -1,4 +1,4 @@
-co-meeting-notifier ![Build Status](https://secure.travis-ci.org/mitsuruog/co-meeting-notifier.png?branch=maser](https://travis-ci.org/mitsuruog/co-meeting-notifier)
+co-meeting-notifier ![Build Status](https://secure.travis-ci.org/mitsuruog/co-meeting-notifier.png?branch=master](https://travis-ci.org/mitsuruog/co-meeting-notifier)
 ===================
 
 Chrome Extentions that displays your [co-meeting](http://www.co-meeting.com/) unread counts.
