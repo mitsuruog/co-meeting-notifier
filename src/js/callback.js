@@ -44,6 +44,14 @@
 
 		module.assignEventHandlers = function () {
 
+			//タブを閉じる
+			$('.js-authenticated-close').on('click',function(e){
+				e.preventDefault();
+				chrome.tabs.getCurrent(function(tab) {
+					chrome.tabs.remove(tab.id, function() { });
+				});
+			});
+
 		};
 
 		initialize();

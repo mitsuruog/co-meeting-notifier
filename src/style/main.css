@@ -1,0 +1,47 @@
+@CHARSET "UTF-8";
+
+html {
+  height: 100%;
+}
+
+body {
+  font-size: 14px;
+}
+
+body.popup {
+  width: 250px;
+  max-width: 250px;
+}
+
+body.authenticated {
+  background-image: -webkit-linear-gradient(top, #107D9D 0%, #284F71 100%);
+  background-image: linear-gradient(to bottom, #107D9D 0%, #284F71 100%);
+}
+
+ul, ol {
+  padding: 0;
+  margin: 5px 10px;
+}
+
+.group {
+  list-style-type: none;
+}
+
+.authenticated-message {
+  width: 500px;
+  max-width: 500px;
+  margin: 60px;
+  text-align: center;
+}
+
+.authenticated-message {
+  background: #FFF;
+  padding: 60px 30px;
+  border-radius: 18px;
+  height: 100px;
+}
+
+.btn-authenticated-close {
+  margin-top: 20px;
+  width: 200px;
+}

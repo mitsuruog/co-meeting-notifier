@@ -70,7 +70,6 @@ var ComeetingNotifier = function() {
 			}).fail(function (jqXHR, state, statusText) {
 
 				console.log(state + ':' + jqXHR.status + ' ' + statusText);
-				module.clearAuthorization();
 
 			});
 	};
@@ -81,7 +80,7 @@ var ComeetingNotifier = function() {
 		if (!refreshToken) return;
 
 		var settings = {
-			url: this.const.TOKEN_URL,
+			url: URL.TOKEN,
 			type: 'POST'
 		};
 
@@ -104,7 +103,6 @@ var ComeetingNotifier = function() {
 			}).fail(function (jqXHR, state, statusText) {
 
 				console.log(state + ':' + jqXHR.status + ' ' + statusText);
-				module.clearAuthorization();
 
 			});
 	};
@@ -114,6 +112,11 @@ var ComeetingNotifier = function() {
 		if (!module.isAuthenticated()) {
 			callback();
 			return;
+		}
+
+		if(!module.isExpiresIn()){
+			//refresh token
+			module.claimRefreshToken();
 		}
 
 		var settings = {
@@ -143,14 +146,7 @@ var ComeetingNotifier = function() {
 
 			}).fail(function (jqXHR, state, statusText) {
 
-				if (jqXHR.status === 401) {
-					//refresh token
-					//callbackにcomeetingNotifCount()を渡してもいいが、無限ループしそうなのでやめる
-					module.claimRefreshToken();
-				}
-
 				console.log(state + ':' + jqXHR.status + ' ' + statusText);
-				module.clearAuthorization();
 
 				callback();
 
@@ -160,6 +156,12 @@ var ComeetingNotifier = function() {
 
 	module.isAuthenticated = function () {
 		return !!module.oauthToken.get();
+	};
+
+	module.isExpiresIn = function (){
+		var oauthToken = module.oauthToken.get();
+		var now = new Date().getTime();
+		return (parseInt(oauthToken.createAt, 10) + parseInt(oauthToken.expires_in, 10) * 1000) > now;
 	};
 
 	module.clearAuthorization = function(){
@@ -203,6 +205,7 @@ var ComeetingNotifier = function() {
 			if (!oauthToken) {
 				console.debug('oauthToken is empty');
 			}
+			oauthToken.createAt = new Date().getTime();
 			localStorage.setItem(this.KEY_NAME, JSON.stringify(oauthToken));
 		},
 		clear: function(){
