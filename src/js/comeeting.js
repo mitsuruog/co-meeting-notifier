@@ -27,7 +27,11 @@ var ComeetingNotifier = function() {
 					xhr.setRequestHeader('Authorization', 'Bearer ' + module.accessToken.get());
 				}
 			},
-			cache: false
+			cache: false,
+			error: function (jqXHR, state, statusText){
+				console.log(state + ':' + jqXHR.status + ' ' + statusText);
+				throw new Error(state + ':' + jqXHR.status + ' ' + statusText);
+			}
 		});
 
 	}
@@ -67,14 +71,10 @@ var ComeetingNotifier = function() {
 				}
 				module.oauthToken.set(accessToken);
 
-			}).fail(function (jqXHR, state, statusText) {
-
-				console.log(state + ':' + jqXHR.status + ' ' + statusText);
-
 			});
 	};
 
-	module.claimRefreshToken = function () {
+	module.claimRefreshToken = function (callback) {
 
 		var refreshToken = module.refreshToken.get();
 		if (!refreshToken) return;
@@ -99,24 +99,28 @@ var ComeetingNotifier = function() {
 					return;
 				}
 				module.oauthToken.set(accessToken);
-
-			}).fail(function (jqXHR, state, statusText) {
-
-				console.log(state + ':' + jqXHR.status + ' ' + statusText);
+				module.fetchUnreadCount(callback, {refresh: true});
 
 			});
+
 	};
 
-	module.fetchUnreadCount = function (callback) {
+	module.fetchUnreadCount = function (callback, options) {
+
+		options = options || {};
 
 		if (!module.isAuthenticated()) {
 			callback();
 			return;
 		}
 
-		if(!module.isExpiresIn()){
+		if(!module.isExpiresIn(new Date())){
 			//refresh token
-			module.claimRefreshToken();
+			if(options.refrash) {
+				callback();
+				return;
+			}
+			module.claimRefreshToken(callback);
 		}
 
 		var settings = {
@@ -139,18 +143,30 @@ var ComeetingNotifier = function() {
 				module.groupList.set(groupList);
 
 				_.each(groupList, function (group) {
-					unreadCount += group.unread_counts;
+					unreadCount = module.countUpUnread(unreadCount, group);
 				});
 
 				callback(unreadCount);
 
-			}).fail(function (jqXHR, state, statusText) {
-
-				console.log(state + ':' + jqXHR.status + ' ' + statusText);
-
-				callback();
-
 			});
+
+	};
+
+	module.countUpUnread = function(unreadCount, group){
+
+		unreadCount = _.isNumber(unreadCount) ? unreadCount: 0;
+
+		if(!_.isObject(group)) {
+			console.debug('group is not Object:' + group);
+			return unreadCount;
+		}
+
+		if(group.unread_off === true) return unreadCount;
+		if(!_.isNumber(group.unread_counts)) {
+			console.debug('group.unread_counts is not Number:' + group.unread_counts);
+			return unreadCount;
+		}
+		return unreadCount + group.unread_counts;
 
 	};
 
@@ -158,10 +174,12 @@ var ComeetingNotifier = function() {
 		return !!module.oauthToken.get();
 	};
 
-	module.isExpiresIn = function (){
+	module.isExpiresIn = function (now){
+		if(!_.isDate(now)){
+			throw new Error('module.isAuthenticated():now is not Date:' + now);
+		}
 		var oauthToken = module.oauthToken.get();
-		var now = new Date().getTime();
-		return (parseInt(oauthToken.createAt, 10) + parseInt(oauthToken.expires_in, 10) * 1000) > now;
+		return (parseInt(oauthToken.createAt, 10) + parseInt(oauthToken.expires_in, 10) * 1000) >= now.getTime();
 	};
 
 	module.clearAuthorization = function(){
