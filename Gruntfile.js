@@ -12,8 +12,11 @@ module.exports = function (grunt) {
 		},
 		watch: {
 			scripts: {
-				files: ['src/js/**/*.js'],
-				tasks: ['jshint'],
+				files: [
+					'src/js/**/*.js',
+					'test/tests/**/*.js'
+				],
+				tasks: ['jshint', 'mocha_phantomjs'],
 				options: {
 					spawn: false
 				}
@@ -24,6 +27,9 @@ module.exports = function (grunt) {
 				"src": "src/",
 				"dest": "dist/crx/"
 			}
+		},
+		mocha_phantomjs: {
+			all: ['test/**/*.html']
 		}
 	});
 
@@ -31,10 +37,11 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-crx');
+	grunt.loadNpmTasks('grunt-mocha-phantomjs');
 
 	// Default task(s).
 	grunt.registerTask('default', ['watch']);
-	grunt.registerTask('build', ['crx']);
+	grunt.registerTask('build', ['mocha_phantomjs', 'crx']);
 
 };
 
