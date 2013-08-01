@@ -21,6 +21,38 @@ module.exports = function (grunt) {
 					spawn: false
 				}
 			},
+			coffee: {
+				files: [
+					'src/coffee/**/*.coffee'
+				],
+				tasks: ['coffee:src']
+			},
+			coffeeTest: {
+				files: [
+					'tests/coffee/**/*.coffee'
+				],
+				tasks: ['coffee:test']
+			}
+		},
+		coffee: {
+			src: {
+				expand: true,
+				flatten: true,
+				cwd: 'src/coffee/',
+				src: ['*.coffee'],
+				dest: 'src/js/',
+				ext: '.js'
+			},
+//			src: {
+//				files: {
+//					'src/js/*.js': 'src/coffee/**/*.coffee'
+//				}
+//			},
+			test: {
+				files: {
+					'tests/*.js': 'tests/coffee/**/*.coffee'
+				}
+			}
 		},
 		crx: {
 			package: {
@@ -38,6 +70,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-crx');
 	grunt.loadNpmTasks('grunt-mocha-phantomjs');
+	grunt.loadNpmTasks('grunt-contrib-coffee');
 
 	// Default task(s).
 	grunt.registerTask('default', ['watch']);

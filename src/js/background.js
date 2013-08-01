@@ -1,71 +1,59 @@
-/**
- * @fileoverview Main module include interval for fetch unread counts.
- * @copyright mitsuruog 2013
- * @author mitsuruog <mitsuru.ogawa.jp@gmail.com>
- * @license MIT
- *
- * @module js/background.js
- */
-var Background = function () {
+(function() {
+  var Background, UPDATE_INTERVAL,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-	var module = {};
-	var UPDATE_INTERVAL = 1000 * 60;
+  UPDATE_INTERVAL = 1000 * 60;
 
-	function initialize () {
+  Background = (function() {
+    function Background() {
+      this.fetch = __bind(this.fetch, this);
+      this.assignEventHandlers();
+      setInterval(this.fetch, UPDATE_INTERVAL);
+    }
 
-		module.assignEventHandlers();
-		setInterval(module.fetch, UPDATE_INTERVAL);
-		module.fetch();
+    Background.prototype.assignEventHandlers = function() {
+      return chrome.browserAction.onClicked.addListener(function() {
+        if (!comeetingNotifier.isAuthenticated()) {
+          window.open(comeetingNotifier.getAuthorizationUrl());
+        } else {
+          chrome.browserAction.setPopup({
+            popup: "popup.html"
+          });
+        }
+      });
+    };
 
-	}
+    Background.prototype.render = function(badge, color, title) {
+      chrome.browserAction.setBadgeText({
+        text: badge
+      });
+      chrome.browserAction.setBadgeBackgroundColor({
+        color: color
+      });
+      chrome.browserAction.setTitle({
+        title: title
+      });
+    };
 
-	module.assignEventHandlers = function () {
+    Background.prototype.fetch = function() {
+      var _this = this;
+      comeetingNotifier.fetchUnreadCount(function(unreadCount) {
+        if ((unreadCount != null) > 0) {
+          _this.render("" + unreadCount, [65, 131, 196, 255], "co-meetiong Notifier");
+        } else if (unreadCount === 0) {
+          _this.render("", [65, 131, 196, 255], "co-meetiong Notifier");
+        } else {
+          _this.render(":(", [166, 41, 41, 255], "You have to be connected to the internet and logged into co-meetiong");
+        }
+      });
+    };
 
-		chrome.browserAction.onClicked.addListener(function () {
+    return Background;
 
-			if (!comeetingNotifier.isAuthenticated()) {
+  })();
 
-				window.open(comeetingNotifier.getAuthorizationUrl());
+  window.bg = new Background();
 
-			} else {
-				chrome.browserAction.setPopup({
-					popup: 'popup.html'
-				});
-			}
-		});
-	};
+  window.bg.fetch();
 
-	module.render = function (badge, color, title) {
-
-		chrome.browserAction.setBadgeText({
-			text: badge
-		});
-		chrome.browserAction.setBadgeBackgroundColor({
-			color: color
-		});
-		chrome.browserAction.setTitle({
-			title: title
-		});
-
-	};
-
-	module.fetch = function () {
-
-		comeetingNotifier.fetchUnreadCount(function (unreadCount) {
-
-			if (unreadCount) {
-				//chrome.browserAction.setBadgeTextがString指定なのでキャストする
-				module.render('' + unreadCount, [65, 131, 196, 255], 'co-meetiong Notifier');
-			} else {
-				module.render(':(', [166, 41, 41, 255], 'You have to be connected to the internet and logged into co-meetiong');
-			}
-
-		});
-	};
-
-	initialize();
-
-	return module;
-
-};
-var bg = new Background();
+}).call(this);
