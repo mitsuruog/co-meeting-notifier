@@ -15,12 +15,10 @@ class Background
 
   assignEventHandlers: ->
     chrome.browserAction.onClicked.addListener ->
-      if not comeetingNotifier.isAuthenticated()
-        window.open comeetingNotifier.getAuthorizationUrl()
-      else
-        chrome.browserAction.setPopup
-          popup: "popup.html"
+      chrome.browserAction.setPopup
+        popup: "popup.html"
       return
+    return
 
   render: (badge, color, title) ->
     chrome.browserAction.setBadgeText
@@ -34,13 +32,22 @@ class Background
   fetch: =>
     comeetingNotifier.fetchUnreadCount (unreadCount) =>
       if unreadCount? > 0
-        @render "" + unreadCount, [65, 131, 196, 255], "co-meetiong Notifier"
+        @render "" + unreadCount, [65, 131, 196, 255], chrome.i18n.getMessage "name"
       else if unreadCount is 0
-        @render "", [65, 131, 196, 255], "co-meetiong Notifier"
+        @render "", [65, 131, 196, 255], chrome.i18n.getMessage "name"
       else
-        @render ":(", [166, 41, 41, 255], "You have to be connected to the internet and logged into co-meetiong"
+        @render ":(", [166, 41, 41, 255], chrome.i18n.getMessage "not_authenticated"
       return
     return
+
+  disableAuthorization: ->
+    comeetingNotifier.clearAuthorization()
+    chrome.browserAction.setPopup
+      popup: ""
+    return
+
+  getAccountInfo: ->
+    return comeetingNotifier.accounts.get()
 
 window.bg = new Background()
 window.bg.fetch()

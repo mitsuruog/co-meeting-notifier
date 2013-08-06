@@ -13,6 +13,7 @@ URL =
   AUTHORIZE: "https://www.co-meeting.com/oauth/authorize"
   TOKEN: "https://www.co-meeting.com/oauth/token"
   FETCH: 'https://www.co-meeting.com/api/v1/groups/my'
+  ME: 'https://www.co-meeting.com/api/v1/users/me'
 
 class ComeetingNotifier
 
@@ -51,6 +52,7 @@ class ComeetingNotifier
         return
 
       @oauthToken.set accessToken
+      @fetchMe()
       if _.isFunction callback
         callback()
     return
@@ -90,12 +92,12 @@ class ComeetingNotifier
 
     if not @isExpiresIn new Date()
       #refresh token
-      if options.refrash
+      if options?.refresh
         if _.isFunction callback
           callback()
           return
 
-      claimRefreshToken callback
+      @claimRefreshToken callback
 
     result = $.ajax
       url: URL.FETCH
@@ -118,6 +120,23 @@ class ComeetingNotifier
       if _.isFunction callback
         callback unreadCount
       return
+    return
+
+  fetchMe: (callback, options) =>
+
+    result = $.ajax
+      url: URL.ME
+      type: "GET"
+
+    result.done (data) =>
+      if data?.result? and not _.isObject data.result
+        console.debug "me is empty"
+        console.debug data;
+        return
+
+      @accounts.set data.result
+      return
+    return
 
   countUpUnread: (unreadCount, group) ->
     if not _.isObject group
@@ -125,13 +144,13 @@ class ComeetingNotifier
       return unreadCount
 
     if group.unread_off is true
-      return unreadCont
+      return unreadCount
 
-    if not _.isNumber group.unread_off
-      console.debug "group.unread_off is not Number: #{group.unread_off}"
-      return unreadCont
+    if not _.isNumber group.unread_counts
+      console.debug "group.unread_counts is not Number: #{group.unread_counts}"
+      return unreadCount
 
-    unreadCount + group.unread_off
+    unreadCount + group.unread_counts
 
   isAuthenticated: ->
     !!@oauthToken.get()
@@ -146,6 +165,7 @@ class ComeetingNotifier
   clearAuthorization: ->
     @groupList.clear()
     @oauthToken.clear()
+    @accounts.clear()
 
   groupList:
     KEY_NAME: "groupList"
@@ -153,9 +173,13 @@ class ComeetingNotifier
       _groupList = localStorage.getItem @KEY_NAME
       if not _groupList
         console.debug "groupList is empty: #{_groupList}"
-      if not _.isArray _groupList
-        console.debug "groupList is not Array: #{_groupList}"
-      if _groupList then JSON.parse _groupList else undefined
+        return undefined
+
+      _.map JSON.parse(_groupList), (group) ->
+
+        #TODO co-meeting側で対応するまで変換する
+        group.url = group.url.replace /^http:\/\//, "https://"
+        group
 
     set: (_groupList) ->
       if not _groupList
@@ -200,6 +224,29 @@ class ComeetingNotifier
       if not _oauthToken?.refresh_token
         console.debug "refresh_token is empty: #{_oauthToken}"
       _oauthToken.refresh_token
+
+  accounts:
+    KEY_NAME: "accounts"
+    get: ->
+      _accounts = localStorage.getItem @KEY_NAME
+      if not _accounts
+        console.debug "Accounts is empty: #{_accounts}"
+        return undefined
+      _accountsObj = JSON.parse _accounts
+
+      #TODO commeting側のAPIがおかしい？？
+      _accountsObj.icon_url = _accountsObj.icon_url.replace /^http:\/\/www.co-meeting.com/, ""
+      _accountsObj
+
+    set: (_accounts) ->
+      if not _accounts
+        console.debug "Accounts is empty: #{_accounts}"
+      localStorage.setItem @KEY_NAME, JSON.stringify _accounts
+      _accounts
+
+    clear: ->
+      localStorage.setItem @KEY_NAME, ""
+      return
 
 window.comeetingNotifier = new ComeetingNotifier()
 

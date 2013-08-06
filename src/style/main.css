@@ -31,17 +31,32 @@ ul, ol {
   width: 500px;
   max-width: 500px;
   margin: 60px;
-  text-align: center;
-}
-
-.authenticated-message {
-  background: #FFF;
   padding: 60px 30px;
+  text-align: center;
   border-radius: 18px;
-  height: 100px;
+  background: #FFF;
 }
 
 .btn-authenticated-close {
   margin-top: 20px;
   width: 200px;
+}
+
+/* options.html
+---------------------------------------*/
+.account-list {
+  margin: 3px;
+}
+
+.account {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.account-button-group {
+  margin-top: 11px;
+}
+
+.account > .account-name {
+  margin-top: 7px;
 }

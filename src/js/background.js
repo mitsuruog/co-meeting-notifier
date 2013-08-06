@@ -12,14 +12,10 @@
     }
 
     Background.prototype.assignEventHandlers = function() {
-      return chrome.browserAction.onClicked.addListener(function() {
-        if (!comeetingNotifier.isAuthenticated()) {
-          window.open(comeetingNotifier.getAuthorizationUrl());
-        } else {
-          chrome.browserAction.setPopup({
-            popup: "popup.html"
-          });
-        }
+      chrome.browserAction.onClicked.addListener(function() {
+        chrome.browserAction.setPopup({
+          popup: "popup.html"
+        });
       });
     };
 
@@ -39,13 +35,24 @@
       var _this = this;
       comeetingNotifier.fetchUnreadCount(function(unreadCount) {
         if ((unreadCount != null) > 0) {
-          _this.render("" + unreadCount, [65, 131, 196, 255], "co-meetiong Notifier");
+          _this.render("" + unreadCount, [65, 131, 196, 255], chrome.i18n.getMessage("name"));
         } else if (unreadCount === 0) {
-          _this.render("", [65, 131, 196, 255], "co-meetiong Notifier");
+          _this.render("", [65, 131, 196, 255], chrome.i18n.getMessage("name"));
         } else {
-          _this.render(":(", [166, 41, 41, 255], "You have to be connected to the internet and logged into co-meetiong");
+          _this.render(":(", [166, 41, 41, 255], chrome.i18n.getMessage("not_authenticated"));
         }
       });
+    };
+
+    Background.prototype.disableAuthorization = function() {
+      comeetingNotifier.clearAuthorization();
+      chrome.browserAction.setPopup({
+        popup: ""
+      });
+    };
+
+    Background.prototype.getAccountInfo = function() {
+      return comeetingNotifier.accounts.get();
     };
 
     return Background;

@@ -8,7 +8,7 @@
 # TODO unread_offの場合はなにかアイコンとか出す
 TEMPLATE_SRC = '''
                 <li class="group">
-                <% if(!unread_off){ %>
+                <% if(!unread_off && unread_counts){ %>
                 <span class="group_unread_counts label label-info"><%- unread_counts %></span>
                 <% } %>
                 <a href="<%= url %>" class="group_link btn-link" target="_blank">
@@ -38,6 +38,11 @@ class Popup
 
   render: ->
     $groupList = $ ".groupList"
+
+    if not comeetingNotifier.isAuthenticated()
+      #TODO no accounts connected
+      $groupList.html chrome.i18n.getMessage "no_one_authenticated"
+
     groupList = comeetingNotifier.groupList.get()
     html = ""
 
@@ -51,12 +56,9 @@ class Popup
   assignMessages: ->
 
   assignEventHandlers: ->
-    #TODO options.htmlを作ろう!
 
   setGroup: (group) ->
     group.unread_counts = group.unread_counts || ""
-    #co-meeting側で対応するまで変換する
-    group.url = group.url.replace /^http:\/\//, "https://"
     group
 
 popup = new Popup()

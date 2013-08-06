@@ -21,15 +21,21 @@ class Callback
     return
 
   assignMessages: ->
+
+    $(".authenticated-message").find('>h3').text(chrome.i18n.getMessage "authenticated").end()
+      .find(".js-authenticated-close").text(chrome.i18n.getMessage "close")
+
+    return
+
+  assignEventHandlers: ->
+
     if not location.href.match(/code=(\S*)/)
       throw new Error "Authorization Code is empty"
 
     code = location.href.match(/code=(\S*)/)[1]
     #accessToken取得
     comeetingNotifier.claimAccessToken code, bg.fetch
-    return
 
-  assignEventHandlers: ->
     $(".js-authenticated-close").on "click", (e) =>
       e.preventDefault()
       chrome.tabs.getCurrent (tab) ->

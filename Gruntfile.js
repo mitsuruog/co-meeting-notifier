@@ -16,7 +16,8 @@ module.exports = function (grunt) {
 					'src/js/**/*.js',
 					'test/tests/**/*.js'
 				],
-				tasks: ['jshint', 'mocha_phantomjs'],
+				//tasks: ['jshint', 'mocha_phantomjs'],
+				tasks: ['mocha_phantomjs'],
 				options: {
 					spawn: false
 				}
@@ -29,9 +30,9 @@ module.exports = function (grunt) {
 			},
 			coffeeTest: {
 				files: [
-					'tests/coffee/**/*.coffee'
+					'test/tests/coffee/**/*.coffee'
 				],
-				tasks: ['coffee:test']
+				tasks: ['coffee:test', 'mocha_phantomjs']
 			}
 		},
 		coffee: {
@@ -43,15 +44,13 @@ module.exports = function (grunt) {
 				dest: 'src/js/',
 				ext: '.js'
 			},
-//			src: {
-//				files: {
-//					'src/js/*.js': 'src/coffee/**/*.coffee'
-//				}
-//			},
 			test: {
-				files: {
-					'tests/*.js': 'tests/coffee/**/*.coffee'
-				}
+				expand: true,
+				flatten: true,
+				cwd: 'test/tests/coffee/',
+				src: ['*.coffee'],
+				dest: 'test/tests/',
+				ext: '.js'
 			}
 		},
 		crx: {

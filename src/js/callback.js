@@ -21,16 +21,17 @@
     };
 
     Callback.prototype.assignMessages = function() {
-      var code;
+      $(".authenticated-message").find('>h3').text(chrome.i18n.getMessage("authenticated")).end().find(".js-authenticated-close").text(chrome.i18n.getMessage("close"));
+    };
+
+    Callback.prototype.assignEventHandlers = function() {
+      var code,
+        _this = this;
       if (!location.href.match(/code=(\S*)/)) {
         throw new Error("Authorization Code is empty");
       }
       code = location.href.match(/code=(\S*)/)[1];
       comeetingNotifier.claimAccessToken(code, bg.fetch);
-    };
-
-    Callback.prototype.assignEventHandlers = function() {
-      var _this = this;
       $(".js-authenticated-close").on("click", function(e) {
         e.preventDefault();
         chrome.tabs.getCurrent(function(tab) {

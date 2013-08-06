@@ -1,11 +1,12 @@
 {
-	"name": "co-meeting Notifier",
+	"name": "__MSG_name__",
 	"description": "Displays your co-meeting unread counts",
 	"version": "0.1.1",
 	"manifest_version": 2,
 	"browser_action": {
 		"default_icon": "icon-19.png"
 	},
+	"options_page": "options.html",
 	"background": {
 		"page": "background.html"
 	},
@@ -13,7 +14,8 @@
 		"tabs",
 		"https://www.co-meeting.com/api/v1/*"
 	],
-	"content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'"
+	"content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'",
+	"default_locale": "en"
 }
 
 

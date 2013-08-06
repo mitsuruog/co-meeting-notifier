@@ -1,0 +1,18 @@
+{
+	"close": {
+		"message": "閉じる",
+		"description": ""
+	},
+	"authenticated": {
+		"message": "認証が終わりました。このウィンドウを閉じてください。",
+		"description": ""
+	},
+	"no_one_authenticated": {
+		"message": "co-meetingから認可されたアカウントがありません。",
+		"description": ""
+	},
+	"not_authenticated": {
+		"message": "インターネットに接続し、co-meetingにてアカウントを認証してください。",
+		"description": ""
+	}
+}

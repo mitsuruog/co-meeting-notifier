@@ -6,13 +6,15 @@
     REDIRECT: "chrome-extension://" + APPLICATION_ID + "/callback.html",
     AUTHORIZE: "https://www.co-meeting.com/oauth/authorize",
     TOKEN: "https://www.co-meeting.com/oauth/token",
-    FETCH: 'https://www.co-meeting.com/api/v1/groups/my'
+    FETCH: 'https://www.co-meeting.com/api/v1/groups/my',
+    ME: 'https://www.co-meeting.com/api/v1/users/me'
   };
 
   ComeetingNotifier = (function() {
     function ComeetingNotifier() {
       this.refreshToken = __bind(this.refreshToken, this);
       this.accessToken = __bind(this.accessToken, this);
+      this.fetchMe = __bind(this.fetchMe, this);
       this.fetchUnreadCount = __bind(this.fetchUnreadCount, this);
       this.claimRefreshToken = __bind(this.claimRefreshToken, this);
       this.claimAccessToken = __bind(this.claimAccessToken, this);
@@ -59,6 +61,7 @@
           return;
         }
         _this.oauthToken.set(accessToken);
+        _this.fetchMe();
         if (_.isFunction(callback)) {
           return callback();
         }
@@ -105,19 +108,19 @@
         }
       }
       if (!this.isExpiresIn(new Date())) {
-        if (options.refrash) {
+        if (options != null ? options.refresh : void 0) {
           if (_.isFunction(callback)) {
             callback();
             return;
           }
         }
-        claimRefreshToken(callback);
+        this.claimRefreshToken(callback);
       }
       result = $.ajax({
         url: URL.FETCH,
         type: "GET"
       });
-      return result.done(function(data) {
+      result.done(function(data) {
         var group, groupList, unreadCount, _i, _len, _ref;
         if (((data != null ? data.result : void 0) != null) && !_.isArray(data.result.groups)) {
           console.debug("groupList is not Array");
@@ -138,19 +141,36 @@
       });
     };
 
+    ComeetingNotifier.prototype.fetchMe = function(callback, options) {
+      var result,
+        _this = this;
+      result = $.ajax({
+        url: URL.ME,
+        type: "GET"
+      });
+      result.done(function(data) {
+        if (((data != null ? data.result : void 0) != null) && !_.isObject(data.result)) {
+          console.debug("me is empty");
+          console.debug(data);
+          return;
+        }
+        _this.accounts.set(data.result);
+      });
+    };
+
     ComeetingNotifier.prototype.countUpUnread = function(unreadCount, group) {
       if (!_.isObject(group)) {
         console.debug("group is not Object: " + group);
         return unreadCount;
       }
       if (group.unread_off === true) {
-        return unreadCont;
+        return unreadCount;
       }
-      if (!_.isNumber(group.unread_off)) {
-        console.debug("group.unread_off is not Number: " + group.unread_off);
-        return unreadCont;
+      if (!_.isNumber(group.unread_counts)) {
+        console.debug("group.unread_counts is not Number: " + group.unread_counts);
+        return unreadCount;
       }
-      return unreadCount + group.unread_off;
+      return unreadCount + group.unread_counts;
     };
 
     ComeetingNotifier.prototype.isAuthenticated = function() {
@@ -168,7 +188,8 @@
 
     ComeetingNotifier.prototype.clearAuthorization = function() {
       this.groupList.clear();
-      return this.oauthToken.clear();
+      this.oauthToken.clear();
+      return this.accounts.clear();
     };
 
     ComeetingNotifier.prototype.groupList = {
@@ -178,15 +199,12 @@
         _groupList = localStorage.getItem(this.KEY_NAME);
         if (!_groupList) {
           console.debug("groupList is empty: " + _groupList);
-        }
-        if (!_.isArray(_groupList)) {
-          console.debug("groupList is not Array: " + _groupList);
-        }
-        if (_groupList) {
-          return JSON.parse(_groupList);
-        } else {
           return void 0;
         }
+        return _.map(JSON.parse(_groupList), function(group) {
+          group.url = group.url.replace(/^http:\/\//, "https://");
+          return group;
+        });
       },
       set: function(_groupList) {
         if (!_groupList) {
@@ -253,6 +271,31 @@
           return _oauthToken.refresh_token;
         }
       };
+    };
+
+    ComeetingNotifier.prototype.accounts = {
+      KEY_NAME: "accounts",
+      get: function() {
+        var _accounts, _accountsObj;
+        _accounts = localStorage.getItem(this.KEY_NAME);
+        if (!_accounts) {
+          console.debug("Accounts is empty: " + _accounts);
+          return void 0;
+        }
+        _accountsObj = JSON.parse(_accounts);
+        _accountsObj.icon_url = _accountsObj.icon_url.replace(/^http:\/\/www.co-meeting.com/, "");
+        return _accountsObj;
+      },
+      set: function(_accounts) {
+        if (!_accounts) {
+          console.debug("Accounts is empty: " + _accounts);
+        }
+        localStorage.setItem(this.KEY_NAME, JSON.stringify(_accounts));
+        return _accounts;
+      },
+      clear: function() {
+        localStorage.setItem(this.KEY_NAME, "");
+      }
     };
 
     return ComeetingNotifier;
