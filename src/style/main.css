@@ -23,10 +23,20 @@ ul, ol {
   margin: 5px 10px;
 }
 
+
+/* popup.html
+---------------------------------------*/
 .group {
   list-style-type: none;
 }
 
+.group_unread_counts {
+  padding: 0.15em .6em;
+}
+
+
+/* callback.html
+---------------------------------------*/
 .authenticated-message {
   width: 500px;
   max-width: 500px;

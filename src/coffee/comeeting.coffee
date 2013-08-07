@@ -114,7 +114,7 @@ class ComeetingNotifier
 
       @groupList.set groupList
 
-      for group in @groupList
+      for group in groupList
         unreadCount = @countUpUnread unreadCount, group
 
       if _.isFunction callback

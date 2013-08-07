@@ -121,7 +121,7 @@
         type: "GET"
       });
       result.done(function(data) {
-        var group, groupList, unreadCount, _i, _len, _ref;
+        var group, groupList, unreadCount, _i, _len;
         if (((data != null ? data.result : void 0) != null) && !_.isArray(data.result.groups)) {
           console.debug("groupList is not Array");
           console.debug(data);
@@ -130,9 +130,8 @@
         groupList = data.result.groups;
         unreadCount = 0;
         _this.groupList.set(groupList);
-        _ref = _this.groupList;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          group = _ref[_i];
+        for (_i = 0, _len = groupList.length; _i < _len; _i++) {
+          group = groupList[_i];
           unreadCount = _this.countUpUnread(unreadCount, group);
         }
         if (_.isFunction(callback)) {
