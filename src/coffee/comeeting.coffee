@@ -59,7 +59,7 @@ class ComeetingNotifier
 
   claimRefreshToken: (callback) =>
 
-    refreshToken = @refreshToken.get()
+    refreshToken = @refreshToken().get()
     if not refreshToken
       return
 

@@ -16,7 +16,6 @@ TEMPLATE_SRC = '''
 class Options
 
   bg = chrome.extension.getBackgroundPage().bg
-  comeetingNotifier = chrome.extension.getBackgroundPage().comeetingNotifier
 
   constructor: ->
     window.addEventListener "load", =>
@@ -30,7 +29,7 @@ class Options
     return
 
   render: ->
-    isAuthenticated = comeetingNotifier.isAuthenticated()
+    isAuthenticated = bg.isAuthenticated()
     $(".js-btn-addAccount").prop "disabled", isAuthenticated
     $(".js-btn-disable").prop "disabled", not isAuthenticated
 
@@ -48,7 +47,7 @@ class Options
 
     $(".js-btn-addAccount").on "click", (e) =>
       e.preventDefault()
-      window.open comeetingNotifier.getAuthorizationUrl()
+      bg.authorization()
       setTimeout =>
         @render()
       , 5000

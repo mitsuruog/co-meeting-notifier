@@ -19,7 +19,6 @@ TEMPLATE_SRC = '''
 class Popup
 
   bg = chrome.extension.getBackgroundPage().bg
-  comeetingNotifier = chrome.extension.getBackgroundPage().comeetingNotifier
 
   constructor: ->
     window.addEventListener "load", =>
@@ -39,15 +38,15 @@ class Popup
   render: ->
     $groupList = $ ".groupList"
 
-    if not comeetingNotifier.isAuthenticated()
+    if not bg.isAuthenticated()
       #TODO no accounts connected
       $groupList.html chrome.i18n.getMessage "no_one_authenticated"
 
-    groupList = comeetingNotifier.groupList.get()
+    groupList = bg.getGroupInfo()
     html = ""
 
     for group in groupList
-      _group = @setGroup group
+      _group = @convertToGroup group
       html += @tmpl _group
 
     $groupList.html html
@@ -57,7 +56,7 @@ class Popup
 
   assignEventHandlers: ->
 
-  setGroup: (group) ->
+  convertToGroup: (group) ->
     group.unread_counts = group.unread_counts || ""
     group
 

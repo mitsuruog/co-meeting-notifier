@@ -8,7 +8,6 @@
 class Callback
 
   bg = chrome.extension.getBackgroundPage().bg
-  comeetingNotifier = chrome.extension.getBackgroundPage().comeetingNotifier
 
   constructor: ->
     window.addEventListener "load", =>
@@ -34,7 +33,7 @@ class Callback
 
     code = location.href.match(/code=(\S*)/)[1]
     #accessToken取得
-    comeetingNotifier.claimAccessToken code, bg.fetch
+    bg.getAccessToken code
 
     $(".js-authenticated-close").on "click", (e) =>
       e.preventDefault()

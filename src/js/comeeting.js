@@ -71,7 +71,7 @@
     ComeetingNotifier.prototype.claimRefreshToken = function(callback) {
       var refreshToken, result,
         _this = this;
-      refreshToken = this.refreshToken.get();
+      refreshToken = this.refreshToken().get();
       if (!refreshToken) {
         return;
       }

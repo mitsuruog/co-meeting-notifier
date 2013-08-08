@@ -2,11 +2,9 @@
   var Callback, callback;
 
   Callback = (function() {
-    var bg, comeetingNotifier;
+    var bg;
 
     bg = chrome.extension.getBackgroundPage().bg;
-
-    comeetingNotifier = chrome.extension.getBackgroundPage().comeetingNotifier;
 
     function Callback() {
       var _this = this;
@@ -31,7 +29,7 @@
         throw new Error("Authorization Code is empty");
       }
       code = location.href.match(/code=(\S*)/)[1];
-      comeetingNotifier.claimAccessToken(code, bg.fetch);
+      bg.getAccessToken(code);
       $(".js-authenticated-close").on("click", function(e) {
         e.preventDefault();
         chrome.tabs.getCurrent(function(tab) {

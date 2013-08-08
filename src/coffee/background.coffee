@@ -49,5 +49,19 @@ class Background
   getAccountInfo: ->
     return comeetingNotifier.accounts.get()
 
+  getGroupInfo: ->
+    return comeetingNotifier.groupList.get()
+
+  getAccessToken: (code) ->
+    comeetingNotifier.claimAccessToken code, @fetch
+    return
+
+  isAuthenticated: ->
+    return comeetingNotifier.isAuthenticated()
+
+  authorization: ->
+    window.open comeetingNotifier.getAuthorizationUrl()
+    return
+
 window.bg = new Background()
 window.bg.fetch()

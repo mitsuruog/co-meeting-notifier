@@ -55,6 +55,22 @@
       return comeetingNotifier.accounts.get();
     };
 
+    Background.prototype.getGroupInfo = function() {
+      return comeetingNotifier.groupList.get();
+    };
+
+    Background.prototype.getAccessToken = function(code) {
+      comeetingNotifier.claimAccessToken(code, this.fetch);
+    };
+
+    Background.prototype.isAuthenticated = function() {
+      return comeetingNotifier.isAuthenticated();
+    };
+
+    Background.prototype.authorization = function() {
+      window.open(comeetingNotifier.getAuthorizationUrl());
+    };
+
     return Background;
 
   })();

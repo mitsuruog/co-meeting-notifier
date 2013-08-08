@@ -4,11 +4,9 @@
   TEMPLATE_SRC = '<li class="group">\n<% if(!unread_off && unread_counts){ %>\n<span class="group_unread_counts label label-info"><%- unread_counts %></span>\n<% } %>\n<a href="<%= url %>" class="group_link btn-link" target="_blank">\n<span class="group_name"><%- name %></span>\n</a>\n</li>';
 
   Popup = (function() {
-    var bg, comeetingNotifier;
+    var bg;
 
     bg = chrome.extension.getBackgroundPage().bg;
-
-    comeetingNotifier = chrome.extension.getBackgroundPage().comeetingNotifier;
 
     function Popup() {
       var _this = this;
@@ -32,14 +30,14 @@
     Popup.prototype.render = function() {
       var $groupList, group, groupList, html, _group, _i, _len;
       $groupList = $(".groupList");
-      if (!comeetingNotifier.isAuthenticated()) {
+      if (!bg.isAuthenticated()) {
         $groupList.html(chrome.i18n.getMessage("no_one_authenticated"));
       }
-      groupList = comeetingNotifier.groupList.get();
+      groupList = bg.getGroupInfo();
       html = "";
       for (_i = 0, _len = groupList.length; _i < _len; _i++) {
         group = groupList[_i];
-        _group = this.setGroup(group);
+        _group = this.convertToGroup(group);
         html += this.tmpl(_group);
       }
       $groupList.html(html);
@@ -49,7 +47,7 @@
 
     Popup.prototype.assignEventHandlers = function() {};
 
-    Popup.prototype.setGroup = function(group) {
+    Popup.prototype.convertToGroup = function(group) {
       group.unread_counts = group.unread_counts || "";
       return group;
     };

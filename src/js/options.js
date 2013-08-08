@@ -5,11 +5,9 @@
   TEMPLATE_SRC = '<div class="row account">\n<div class="col-lg-2 account-avatar"><img src="<%=icon_url%>" class="img-circle"></div>\n<div class="col-lg-3 account-name"><%-name%>(<%-screen_name%>)</div>\n<div class="col-lg-2 account-button"></div>\n</div>';
 
   Options = (function() {
-    var bg, comeetingNotifier;
+    var bg;
 
     bg = chrome.extension.getBackgroundPage().bg;
-
-    comeetingNotifier = chrome.extension.getBackgroundPage().comeetingNotifier;
 
     function Options() {
       this.assignEventHandlers = __bind(this.assignEventHandlers, this);
@@ -27,7 +25,7 @@
 
     Options.prototype.render = function() {
       var isAuthenticated;
-      isAuthenticated = comeetingNotifier.isAuthenticated();
+      isAuthenticated = bg.isAuthenticated();
       $(".js-btn-addAccount").prop("disabled", isAuthenticated);
       $(".js-btn-disable").prop("disabled", !isAuthenticated);
       if (isAuthenticated) {
@@ -43,7 +41,7 @@
       var _this = this;
       $(".js-btn-addAccount").on("click", function(e) {
         e.preventDefault();
-        window.open(comeetingNotifier.getAuthorizationUrl());
+        bg.authorization();
         setTimeout(function() {
           return _this.render();
         }, 5000);
