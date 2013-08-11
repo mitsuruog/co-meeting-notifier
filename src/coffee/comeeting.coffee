@@ -55,6 +55,7 @@ class ComeetingNotifier
       @fetchMe()
       if _.isFunction callback
         callback()
+      return
     return
 
   claimRefreshToken: (callback) =>
@@ -81,6 +82,7 @@ class ComeetingNotifier
       @oauthToken.set accessToken
       @fetchUnreadCount callback,
         refresh: true
+      return
     return
 
   fetchUnreadCount: (callback, options) =>
@@ -157,7 +159,7 @@ class ComeetingNotifier
 
   isExpiresIn: (now) ->
     if not _.isDate now
-      throw new Error "module.isAuthenticated():now is not Date: #{now}"
+      throw new Error "now is not Date: #{now}"
 
     oauthToken = @oauthToken.get()
     (parseInt oauthToken.createAt, 10) + (parseInt oauthToken.expires_in, 10) * 1000 >= now.getTime()

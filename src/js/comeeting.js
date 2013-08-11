@@ -63,7 +63,7 @@
         _this.oauthToken.set(accessToken);
         _this.fetchMe();
         if (_.isFunction(callback)) {
-          return callback();
+          callback();
         }
       });
     };
@@ -92,7 +92,7 @@
           return;
         }
         _this.oauthToken.set(accessToken);
-        return _this.fetchUnreadCount(callback, {
+        _this.fetchUnreadCount(callback, {
           refresh: true
         });
       });
@@ -179,7 +179,7 @@
     ComeetingNotifier.prototype.isExpiresIn = function(now) {
       var oauthToken;
       if (!_.isDate(now)) {
-        throw new Error("module.isAuthenticated():now is not Date: " + now);
+        throw new Error("now is not Date: " + now);
       }
       oauthToken = this.oauthToken.get();
       return (parseInt(oauthToken.createAt, 10)) + (parseInt(oauthToken.expires_in, 10)) * 1000 >= now.getTime();

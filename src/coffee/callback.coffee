@@ -35,11 +35,19 @@ class Callback
     #accessToken取得
     bg.getAccessToken code
 
+    #250ms後に自動で閉じる
+    setTimeout ->
+      chrome.tabs.getCurrent (tab) ->
+        chrome.tabs.remove tab.id, ->
+        return
+      return
+    , 250
+
+    #閉じなかった時のための保険
     $(".js-authenticated-close").on "click", (e) =>
       e.preventDefault()
       chrome.tabs.getCurrent (tab) ->
         chrome.tabs.remove tab.id, ->
-          return
         return
       return
     return

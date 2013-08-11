@@ -30,6 +30,11 @@
       }
       code = location.href.match(/code=(\S*)/)[1];
       bg.getAccessToken(code);
+      setTimeout(function() {
+        chrome.tabs.getCurrent(function(tab) {
+          chrome.tabs.remove(tab.id, function() {});
+        });
+      }, 250);
       $(".js-authenticated-close").on("click", function(e) {
         e.preventDefault();
         chrome.tabs.getCurrent(function(tab) {

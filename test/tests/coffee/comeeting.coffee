@@ -46,3 +46,5 @@ describe "Tests comeeting.js", ->
       expect(comeetingNotifier.isExpiresIn(@stub_date)).not.to.be.ok()
       return
     return
+
+  describe "Test "
