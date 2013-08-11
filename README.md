@@ -10,17 +10,18 @@ Chrome Extentions that displays your [co-meeting](http://www.co-meeting.com/) un
 
 ## Feature
 
-* Show number of your unread.
+* Show number of your unread.(Exclude meeting that ignore unread.)
 * Show groups you are joining.
 * Move to co-meeting page quickly.
-* 未読数を表示。
+* 未読数を表示。（ただし未読OFFのミーティングを除く）
 * 参加しているグループを表示。
 * co-mettingページへすばやく移動。
 
 ## Release History
 
-* 2013-07-24   v0.1.0   prerelease
-
+* 2013-08-11  v0.1.1: `New feature:` add optional page. `Improvement:` exclude meeting that ignore unread.
+* 2013-07-24  v0.1.0: prerelease.
+    
 ## License
 
 [MIT License](http://ja.wikipedia.org/wiki/MIT_License)
