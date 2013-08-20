@@ -3,6 +3,10 @@
 		"message": "co-meeting Notifier",
 		"description": ""
 	},
+	"description": {
+		"message": "Displays your co-meeting unread counts.",
+		"description": ""
+	},
 	"close": {
 		"message": "Close",
 		"description": ""

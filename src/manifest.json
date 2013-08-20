@@ -1,7 +1,7 @@
 {
 	"name": "__MSG_name__",
-	"description": "Displays your co-meeting unread counts",
-	"version": "0.1.1",
+	"description": "__MSG_description__",
+	"version": "0.1.1.1",
 	"manifest_version": 2,
 	"browser_action": {
 		"default_icon": "icon-19.png"
