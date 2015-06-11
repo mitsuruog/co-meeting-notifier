@@ -1,21 +1,44 @@
 {
-	"name": "__MSG_name__",
-	"description": "__MSG_description__",
-	"version": "0.1.1.1",
-	"manifest_version": 2,
-	"browser_action": {
-		"default_icon": "icon-19.png"
-	},
-	"options_page": "options.html",
-	"background": {
+  "name": "__MSG_name__",
+  "version": "0.1.2",
+  "manifest_version": 2,
+  "description": "__MSG_description__",
+  "icons": {
+    "16": "icon-16.png",
+    "48": "icon-48.png"
+  },
+  "default_locale": "en",
+  "background": {
 		"page": "background.html"
-	},
-	"permissions": [
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "icon-19.png"
+    },
+    "default_title": "co-meeting-notifer",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "js/background.js",
+				"js/comeeting.js",
+				"js/const.js",
+        "js/callback.js"
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "permissions": [
 		"tabs",
 		"https://www.co-meeting.com/api/v1/*"
-	],
-	"content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'",
-	"default_locale": "en"
+  ],
+	"web_accessible_resources": ["callback.html"],
+	"content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'"
 }
-
-

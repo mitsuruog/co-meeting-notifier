@@ -140,7 +140,7 @@
       });
     };
 
-    ComeetingNotifier.prototype.fetchMe = function(callback, options) {
+    ComeetingNotifier.prototype.fetchMe = function(callback) {
       var result,
         _this = this;
       result = $.ajax({
@@ -154,6 +154,9 @@
           return;
         }
         _this.accounts.set(data.result);
+        if (_.isFunction(callback)) {
+          callback();
+        }
       });
     };
 

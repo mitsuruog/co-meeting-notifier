@@ -2,14 +2,10 @@
   var Callback, callback;
 
   Callback = (function() {
-    var bg;
-
-    bg = chrome.extension.getBackgroundPage().bg;
-
     function Callback() {
       var _this = this;
       window.addEventListener("load", function() {
-        _this.start();
+        return _this.start();
       });
     }
 
@@ -18,9 +14,7 @@
       this.assignEventHandlers();
     };
 
-    Callback.prototype.assignMessages = function() {
-      $(".authenticated-message").find('>h3').text(chrome.i18n.getMessage("authenticated")).end().find(".js-authenticated-close").text(chrome.i18n.getMessage("close"));
-    };
+    Callback.prototype.assignMessages = function() {};
 
     Callback.prototype.assignEventHandlers = function() {
       var code,
@@ -29,17 +23,16 @@
         throw new Error("Authorization Code is empty");
       }
       code = location.href.match(/code=(\S*)/)[1];
-      bg.getAccessToken(code);
-      setTimeout(function() {
-        chrome.tabs.getCurrent(function(tab) {
-          chrome.tabs.remove(tab.id, function() {});
+      window.comeetingNotifier.claimAccessToken(code, function() {
+        console.log("claimAccessToken :)");
+        return window.comeetingNotifier.fetchMe(function() {
+          console.log("fetchMe :)");
+          return window.close();
         });
-      }, 250);
+      });
       $(".js-authenticated-close").on("click", function(e) {
         e.preventDefault();
-        chrome.tabs.getCurrent(function(tab) {
-          chrome.tabs.remove(tab.id, function() {});
-        });
+        return window.close();
       });
     };
 

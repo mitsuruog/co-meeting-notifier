@@ -7,12 +7,9 @@
 
 class Callback
 
-  bg = chrome.extension.getBackgroundPage().bg
-
   constructor: ->
     window.addEventListener "load", =>
       @start()
-      return
 
   start: ->
     @assignMessages()
@@ -20,10 +17,6 @@ class Callback
     return
 
   assignMessages: ->
-
-    $(".authenticated-message").find('>h3').text(chrome.i18n.getMessage "authenticated").end()
-      .find(".js-authenticated-close").text(chrome.i18n.getMessage "close")
-
     return
 
   assignEventHandlers: ->
@@ -32,24 +25,18 @@ class Callback
       throw new Error "Authorization Code is empty"
 
     code = location.href.match(/code=(\S*)/)[1]
-    #accessToken取得
-    bg.getAccessToken code
 
-    #250ms後に自動で閉じる
-    setTimeout ->
-      chrome.tabs.getCurrent (tab) ->
-        chrome.tabs.remove tab.id, ->
-        return
-      return
-    , 250
+    #accessToken取得
+    window.comeetingNotifier.claimAccessToken code, () ->
+      console.log "claimAccessToken :)"
+      window.comeetingNotifier.fetchMe () ->
+        console.log "fetchMe :)"
+        window.close()
 
     #閉じなかった時のための保険
     $(".js-authenticated-close").on "click", (e) =>
       e.preventDefault()
-      chrome.tabs.getCurrent (tab) ->
-        chrome.tabs.remove tab.id, ->
-        return
-      return
+      window.close()
     return
 
 callback = new Callback()

@@ -123,8 +123,8 @@ class ComeetingNotifier
         callback unreadCount
       return
     return
-
-  fetchMe: (callback, options) =>
+    
+  fetchMe: (callback) =>
 
     result = $.ajax
       url: URL.ME
@@ -137,6 +137,8 @@ class ComeetingNotifier
         return
 
       @accounts.set data.result
+      if _.isFunction callback
+        callback()
       return
     return
 
@@ -251,4 +253,3 @@ class ComeetingNotifier
       return
 
 window.comeetingNotifier = new ComeetingNotifier()
-
