@@ -1,20 +1,32 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!doctype html>
+<html>
 <head>
-	<meta charset="utf-8">
-	<title>Test | co-meeting notifier</title>
-	<link rel="stylesheet" href="lib/mocha.css">
-	<script src="../src/assets/js/jquery-2.0.3.min.js"></script>
-	<script src="../src/assets/js/underscore-min.js"></script>
-	<script src="tests/test_const.js"></script>
-	<script src="../src/js/comeeting.js"></script>
-	<script src="lib/mocha.js"></script>
-	<script src="lib/sinon.js"></script>
-	<script src="lib/expect.js"></script>
-	<script src="lib/setup.js"></script>
-	<script src="tests/comeeting.js"></script>
+    <meta charset="utf-8">
+    <title>Mocha Spec Runner</title>
+    <link rel="stylesheet" href="bower_components/mocha/mocha.css">
 </head>
 <body>
-<div id="mocha"></div>
+    <div id="mocha"></div>
+    <script src="bower_components/mocha/mocha.js"></script>
+    <script>mocha.setup('bdd')</script>
+    <script src="bower_components/chai/chai.js"></script>
+    <script src="bower_components/sinonjs/sinon.js"></script>
+    <script>
+        var assert = chai.assert;
+        var expect = chai.expect;
+        var should = chai.should();
+    </script>
+
+    <!-- include source files here... -->
+    <script src="bower_components/jQuery/dist/jquery.js"></script>
+    <script src="scripts/const.js"></script>
+    <script src="scripts/api.js"></script>
+
+    <!-- include spec files here... -->
+    <script src="spec/spec_api.js"></script>
+
+    <script>
+    mocha.run()
+    </script>
 </body>
 </html>

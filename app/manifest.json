@@ -1,0 +1,34 @@
+{
+  "name": "__MSG_name__",
+  "version": "0.1.3",
+  "manifest_version": 2,
+  "description": "__MSG_description__",
+  "icons": {
+    "16": "images/icon-16.png",
+    "128": "images/icon-128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "persistent": false,
+    "scripts": [
+      "bower_components/jQuery/dist/jquery.min.js",
+      "scripts/const.js",
+      "scripts/api.js",
+      "scripts/background.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": {
+      "19": "images/icon-19.png",
+      "38": "images/icon-38.png"
+    },
+    "default_title": "co-meeting Notifer",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "permissions": [
+    "activeTab",
+    "alarms",
+    "https://www.co-meeting.com/api/v1/*"
+  ]
+}

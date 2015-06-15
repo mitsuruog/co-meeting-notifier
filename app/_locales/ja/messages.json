@@ -1,0 +1,18 @@
+{
+  "name": {
+    "message": "co-meeting Notifer",
+    "description": ""
+  },
+  "description": {
+    "message": "co-meetingの未読数を表示します。",
+    "description": ""
+  },
+  "no_one_authenticated": {
+    "message": "co-meetingから認可されたアカウントがありません。",
+    "description": ""
+  },
+  "not_authenticated": {
+		"message": "インターネットに接続し、co-meetingにてアカウントを認証してください。",
+		"description": ""
+	}
+}
