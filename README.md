@@ -19,7 +19,8 @@ Chrome Extentions that displays your [co-meeting](http://www.co-meeting.com/) un
 
 ## Release History
 
-* 2015-06-11  v0.1.3: redesign(good-by coffee).
+* 2015-06-15  v0.1.4: `Fixed` missing createAt.
+* 2015-06-15  v0.1.3: redesign(good-by coffee).
 * 2015-06-12  v0.1.2: `Fixed` #1
 * 2013-08-11  v0.1.1: `New feature:` add optional page. `Improvement:` exclude meeting that ignore unread.
 * 2013-07-24  v0.1.0: prerelease.
