@@ -6,6 +6,7 @@
   };
 
   Comeeting.prototype.getAccessToken = function(code) {
+    var that = this;
     return Promise.resolve($.ajax({
       url: window.comeetingConfig.URL.TOKEN,
       type: 'POST',
@@ -18,13 +19,14 @@
       }
     })).then(function(token) {
       //console.log('token:', token);
-      localStorage.setItem('oauthToken', JSON.stringify(token));
+      that.setToken(token);
       return Promise.resolve(token.access_token);
     });
   };
 
   Comeeting.prototype.getRefreshToken = function() {
-    var refreshToken = this.getRefleshToken();
+    var that = this;
+    var refreshToken = that.getRefleshToken();
     return Promise.resolve($.ajax({
       url: window.comeetingConfig.URL.TOKEN,
       type: 'POST',
@@ -37,7 +39,7 @@
       }
     })).then(function(token) {
       //console.log('token:', token);
-      localStorage.setItem('oauthToken', JSON.stringify(token));
+      that.setToken(token);
       return Promise.resolve(token.access_token);
     });
   };
@@ -117,6 +119,12 @@
     } else {
       return null;
     }
+  };
+
+  Comeeting.prototype.setToken = function(tokenObj) {
+    tokenObj = tokenObj || {};
+    tokenObj.createAt = new Date().getTime();
+    localStorage.setItem('oauthToken', JSON.stringify(tokenObj));
   };
 
   Comeeting.prototype.getRefleshToken = function() {
